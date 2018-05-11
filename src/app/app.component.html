@@ -1,0 +1,72 @@
+<mat-sidenav-container fxFill>
+  <mat-sidenav-content fxFill>
+    <div fxFlex="70%">
+      <mat-card fxFlex fxFill fxLayout="column" class="no-padding">
+        <div fxLayoutAlign="space-between center" class="media-toolbar">
+          <h3 class="media-toolbar-title">RealComm</h3>
+        </div>
+        <div fxFlex class="media-video-wrapper">
+          <video #localVideoRef autoplay class="media-video-local" muted="muted"></video>
+          <video #remoteVideoRef autoplay class="media-video-remote"></video>
+        </div>
+      </mat-card>
+    </div>
+    <mat-divider></mat-divider>
+    <div fxFlex="2%"></div>
+    <div fxFlex="28%">
+      <mat-card fxFlex="100%" fxLayout="column" class="no-padding">
+        <div fxFlex="6%" fxLayoutAlign="space-between center" class="user-toolbar">
+          <h3 class="user-toolbar-title">在线用户</h3>
+        </div>
+        <mat-card-content fxFlex="94%" class="user-list-wrapper">
+          <mat-list>
+            <mat-list-item class="user-list-item">
+              <form>
+                <span class="user-status-wrapper"
+                      [matTooltip]="principalProfile.name"
+                      [matTooltipPosition]="'before'"
+                      [style.background-color]="
+                        principalProfile['status'] ?
+                          principalProfile['status']=='IDLE'?'green'
+                          : principalProfile['status']=='CALLING'?'red'
+                            :'yellow'
+                        : 'gray'">
+                  {{principalProfile.name ? principalProfile.name.charAt(0) : principalProfile.nickname.charAt(0)}}
+                </span>
+                <mat-form-field>
+                  <input matInput name="name" placeholder="昵称" maxlength="10" [(ngModel)]="principalProfile.nickname" (change)="onChangePrincipalNickname()">
+                </mat-form-field>
+              </form>
+            </mat-list-item>
+          </mat-list>
+          <mat-divider></mat-divider>
+          <mat-list>
+           <mat-list-item *ngFor="let principal of principalList" class="user-list-item">
+              <span class="user-status-wrapper"
+                    [matTooltip]="principal.name"
+                    [matTooltipPosition]="'before'"
+                    [style.background-color]="
+                        principal['status'] ?
+                          principal['status']=='IDLE'?'green'
+                          : principal['status']=='CALLING'?'red'
+                            :'yellow'
+                        : 'gray'">
+                {{principal.nickname ? principal.nickname.charAt(0) : principal.name.charAt(0)}}
+              </span>
+              <span class="user-display-wrapper">{{principal.nickname ? principal.nickname : principal.name}}</span>
+              <span class="spacer"></span>
+              <mat-spinner class="user-calling-spinner" [diameter]="26" [strokeWidth]="3" [color]="'accent'" *ngIf="call && call['callee']['name']==principal.name && call['callee']['status']=='IDLE'"></mat-spinner>
+              <button mat-icon-button (click)="dialCall(principal)" *ngIf="!call"><i class="material-icons" *ngIf="principal['status']=='IDLE'">call</i></button>
+              <button mat-icon-button color="accent" (click)="endCall()" *ngIf="call&&(call['calling']['name']==principal['name']||call['callee']['name']==principal['name'])"><i class="material-icons">call_end</i></button>
+              <button mat-icon-button (click)="drawer.opened ? drawer.close() : drawer.open()"><i class="material-icons">chat</i></button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-sidenav-content>
+  <mat-sidenav #drawer class="chat-drawer-wrapper" position="start">
+    <h1>HelloWorld</h1>
+  </mat-sidenav>
+</mat-sidenav-container>
+
